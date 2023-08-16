@@ -54,7 +54,6 @@ CREATE TABLE student (
  id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
  skill_level VARCHAR(500) NOT NULL,
  person_id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
- sibling_person_number VARCHAR(10),
  lesson_id INT GENERATED ALWAYS AS IDENTITY
 );
 
@@ -62,7 +61,7 @@ ALTER TABLE student ADD CONSTRAINT PK_student PRIMARY KEY (id);
 
 
 CREATE TABLE student_payment (
- id INT NOT NULL,
+ id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
  applied_discount VARCHAR(500),
  lesson_skill_level VARCHAR(500),
  student_id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
@@ -105,7 +104,7 @@ CREATE TABLE instrument_rented (
  price VARCHAR(10000000) NOT NULL,
  amount VARCHAR(500),
  renting_date VARCHAR(500),
- student_payment_id INT NOT NULL,
+ student_payment_id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
  instrument_stock_id INT GENERATED ALWAYS AS IDENTITY NOT NULL
 );
 
@@ -120,6 +119,15 @@ CREATE TABLE schedueled_time_slots (
 );
 
 ALTER TABLE schedueled_time_slots ADD CONSTRAINT PK_schedueled_time_slots PRIMARY KEY (id);
+
+
+CREATE TABLE sibling (
+ id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
+ student_id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
+ person_number VARCHAR(500) NOT NULL
+);
+
+ALTER TABLE sibling ADD CONSTRAINT PK_sibling PRIMARY KEY (id);
 
 
 ALTER TABLE instructor ADD CONSTRAINT FK_instructor_0 FOREIGN KEY (person_id) REFERENCES person (id);
@@ -152,3 +160,8 @@ ALTER TABLE instrument_rented ADD CONSTRAINT FK_instrument_rented_1 FOREIGN KEY 
 
 
 ALTER TABLE schedueled_time_slots ADD CONSTRAINT FK_schedueled_time_slots_0 FOREIGN KEY (student_id) REFERENCES student (id);
+
+
+ALTER TABLE sibling ADD CONSTRAINT FK_sibling_0 FOREIGN KEY (student_id) REFERENCES student (id);
+
+
