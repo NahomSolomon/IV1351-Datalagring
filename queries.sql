@@ -55,3 +55,28 @@ ORDER BY total_lessons DESC;
 --Then it groups them to each instructor and finally order the result in descending number of lessons.
 
 
+
+--List all ensembles held during the next week, sorted by music genre and weekday.
+--For each ensemble tell whether it's full booked, has 1-2 seats left or has more seats left.
+SELECT
+    e.genre,
+    CASE
+        WHEN COUNT(s.student_id) >= MAX(e.maximum_number_of_students) THEN 'Full'
+        WHEN COUNT(s.student_id) >= MAX(e.maximum_number_of_students) - 2 THEN '1-2 Seats Left'
+        ELSE 'More Seats Left'
+    END AS seat_availability,
+    EXTRACT(DOW FROM l.date_and_time::timestamp) AS weekday
+FROM
+    public.ensembles e
+    JOIN public.lesson l ON e.lesson_id = l.lesson_id
+    LEFT JOIN public.student s ON l.lesson_id = s.lesson_id
+WHERE
+    l.date_and_time::timestamp >= NOW()::date
+    AND l.date_and_time::timestamp < NOW()::date + INTERVAL '7 days'
+GROUP BY
+    e.genre, l.date_and_time::timestamp
+ORDER BY
+    e.genre, weekday;
+--It checks the number of booked places and the genre column of the Ensemble table. 
+--Then it is doing a join between the ensemble table and lesson table and left join with the student table.
+--It is then being filtered with the date specified and grouped with genre and weekday.
